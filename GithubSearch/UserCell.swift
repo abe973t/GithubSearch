@@ -19,12 +19,16 @@ class UserCell: UITableViewCell {
     var userNameLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
+        lbl.backgroundColor = .blue
+        lbl.text = "UserName"
         return lbl
     }()
     
     var repoLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
+        lbl.backgroundColor = .orange
+        lbl.text = "Repo: ##"
         return lbl
     }()
 
@@ -36,6 +40,8 @@ class UserCell: UITableViewCell {
     
     func addViews() {
         addSubview(imgView)
+        addSubview(userNameLabel)
+        addSubview(repoLabel)
         
         addConstraints()
     }
@@ -44,8 +50,18 @@ class UserCell: UITableViewCell {
         NSLayoutConstraint.activate([
             imgView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             imgView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            imgView.heightAnchor.constraint(equalToConstant: 75),
-            imgView.widthAnchor.constraint(equalToConstant: 80),
+            imgView.heightAnchor.constraint(equalToConstant: 60),
+            imgView.widthAnchor.constraint(equalToConstant: 55),
+            
+            userNameLabel.leadingAnchor.constraint(equalTo: imgView.trailingAnchor, constant: 10),
+            userNameLabel.topAnchor.constraint(equalTo: imgView.topAnchor),
+            userNameLabel.heightAnchor.constraint(equalTo: imgView.heightAnchor),
+            userNameLabel.trailingAnchor.constraint(equalTo: repoLabel.leadingAnchor, constant: -10),
+            
+            repoLabel.widthAnchor.constraint(equalToConstant: 75),
+            repoLabel.topAnchor.constraint(equalTo: userNameLabel.topAnchor),
+            repoLabel.heightAnchor.constraint(equalTo: userNameLabel.heightAnchor),
+            repoLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
         ])
     }
     

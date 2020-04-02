@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
     
     var searchController: UISearchController!
+    var users = [User]()
     
     let tableView: UITableView = {
         let tblView = UITableView()
@@ -50,7 +51,20 @@ class ViewController: UIViewController {
 
 extension ViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
+        self.users = []
         
+        if let text = searchController.searchBar.text, !text.isEmpty, let url = URL(string: Constants.searchUsersEndpoint.rawValue + text) {
+            URLSession.shared.dataTask(with: url) { (data, response, err) in
+                if err == nil, let data = data {
+                    do {
+                        let results = try JSONDecoder().decode(GithubResults.self, from: data)
+                        self.users = results.items!
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }.resume()
+        }
     }
     
     func configureSearchBar() {
@@ -84,6 +98,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        100
+        return 80
     }
 }

@@ -13,6 +13,9 @@
 		0421B0F524353AA4004BF597 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0421B0F424353AA4004BF597 /* Assets.xcassets */; };
 		0421B10024353DC2004BF597 /* T-Mobile iOS Screening.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 0421B0FF24353DC2004BF597 /* T-Mobile iOS Screening.pdf */; };
 		0421B10224353E26004BF597 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421B10124353E26004BF597 /* UserCell.swift */; };
+		04489E2E243569240050964C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E2D243569240050964C /* Constants.swift */; };
+		04489E3024356A460050964C /* GithubResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E2F24356A460050964C /* GithubResults.swift */; };
+		04489E3224356A7F0050964C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E3124356A7F0050964C /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,9 @@
 		0421B0F924353AA4004BF597 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0421B0FF24353DC2004BF597 /* T-Mobile iOS Screening.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "T-Mobile iOS Screening.pdf"; sourceTree = "<group>"; };
 		0421B10124353E26004BF597 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		04489E2D243569240050964C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		04489E2F24356A460050964C /* GithubResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubResults.swift; sourceTree = "<group>"; };
+		04489E3124356A7F0050964C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +66,9 @@
 				0421B0EB24353AA1004BF597 /* AppDelegate.swift */,
 				0421B0ED24353AA1004BF597 /* SceneDelegate.swift */,
 				0421B0EF24353AA1004BF597 /* ViewController.swift */,
+				04489E2D243569240050964C /* Constants.swift */,
+				04489E2F24356A460050964C /* GithubResults.swift */,
+				04489E3124356A7F0050964C /* User.swift */,
 				0421B10124353E26004BF597 /* UserCell.swift */,
 				0421B0F424353AA4004BF597 /* Assets.xcassets */,
 				0421B0F924353AA4004BF597 /* Info.plist */,
@@ -137,10 +146,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04489E2E243569240050964C /* Constants.swift in Sources */,
 				0421B10224353E26004BF597 /* UserCell.swift in Sources */,
 				0421B0F024353AA1004BF597 /* ViewController.swift in Sources */,
+				04489E3024356A460050964C /* GithubResults.swift in Sources */,
 				0421B0EC24353AA1004BF597 /* AppDelegate.swift in Sources */,
 				0421B0EE24353AA1004BF597 /* SceneDelegate.swift in Sources */,
+				04489E3224356A7F0050964C /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
