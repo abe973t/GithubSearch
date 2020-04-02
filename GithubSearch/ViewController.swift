@@ -47,23 +47,40 @@ class ViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+    
+    fileprivate func getUser(url: URL, completion: @escaping (User)->Void) {
+        URLSession.shared.dataTask(with: url) { (data, response, err) in
+            if let data = data {
+                do {
+                    let userData = try JSONDecoder().decode(User.self, from: data)
+                    completion(userData)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }.resume()
+    }
 }
 
 extension ViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
-        self.users = []
-        
-        if let text = searchController.searchBar.text, !text.isEmpty, let url = URL(string: Constants.searchUsersEndpoint.rawValue + text) {
-            URLSession.shared.dataTask(with: url) { (data, response, err) in
-                if err == nil, let data = data {
-                    do {
-                        let results = try JSONDecoder().decode(GithubResults.self, from: data)
-                        self.users = results.items!
-                    } catch {
-                        print(error.localizedDescription)
+        var timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
+            if let text = searchController.searchBar.text, !text.isEmpty, let url = URL(string: Constants.searchUsersEndpoint.rawValue + text) {
+                URLSession.shared.dataTask(with: url) { (data, response, err) in
+                    if err == nil, let data = data {
+                        do {
+                            let results = try JSONDecoder().decode(GithubResults.self, from: data)
+                            self.users = results.items ?? []
+                           
+                            DispatchQueue.main.async {
+                                self.tableView.reloadData()
+                            }
+                        } catch {
+                            print(error.localizedDescription)
+                        }
                     }
-                }
-            }.resume()
+                }.resume()
+            }
         }
     }
     
@@ -84,7 +101,7 @@ extension ViewController: UISearchResultsUpdating, UISearchControllerDelegate, U
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return users.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -92,9 +109,23 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             return UITableViewCell()
         }
         
-        cell.imgView.backgroundColor = .systemBlue
+        cell.userNameLabel.text = users[indexPath.row].login
+        cell.imgView.downloadImageFrom(link: users[indexPath.row].avatar_url!, contentMode: .scaleAspectFit)
+//        cell.repoLabel.text = "Repos: \(String(describing: users[indexPath.row].repos))"
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let urlString = users[indexPath.row].url, let url = URL(string: urlString) {
+            getUser(url: url) { (user) in
+                DispatchQueue.main.async {
+                    let pVC = ProfileViewController()
+                    pVC.user = user
+                    self.navigationController?.pushViewController(pVC, animated: true)
+                }
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -27,5 +27,17 @@ struct User : Codable {
     let received_events_url : String?
     let type : String?
     let site_admin : Bool?
-    let score : Double?
+    let name: String?
+    let company: String?
+    let blog: String?
+    let location: String?
+    let email: String?
+    let hireable: Bool?
+    let bio: String?
+    let public_repos: Int?
+    let public_gists: Int?
+    let followers: Int?
+    let following: Int?
+    let created_at: String?
+    let updated_at: String?
 }

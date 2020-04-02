@@ -16,6 +16,9 @@
 		04489E2E243569240050964C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E2D243569240050964C /* Constants.swift */; };
 		04489E3024356A460050964C /* GithubResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E2F24356A460050964C /* GithubResults.swift */; };
 		04489E3224356A7F0050964C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E3124356A7F0050964C /* User.swift */; };
+		04489E3424356E200050964C /* UIImageView+downloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E3324356E200050964C /* UIImageView+downloadImage.swift */; };
+		04D1C25824357338000C35E0 /* Repos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D1C25724357338000C35E0 /* Repos.swift */; };
+		04D1C25A2435928B000C35E0 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D1C2592435928B000C35E0 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +33,9 @@
 		04489E2D243569240050964C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		04489E2F24356A460050964C /* GithubResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubResults.swift; sourceTree = "<group>"; };
 		04489E3124356A7F0050964C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		04489E3324356E200050964C /* UIImageView+downloadImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+downloadImage.swift"; sourceTree = "<group>"; };
+		04D1C25724357338000C35E0 /* Repos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repos.swift; sourceTree = "<group>"; };
+		04D1C2592435928B000C35E0 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,9 +72,12 @@
 				0421B0EB24353AA1004BF597 /* AppDelegate.swift */,
 				0421B0ED24353AA1004BF597 /* SceneDelegate.swift */,
 				0421B0EF24353AA1004BF597 /* ViewController.swift */,
+				04D1C2592435928B000C35E0 /* ProfileViewController.swift */,
+				04D1C25724357338000C35E0 /* Repos.swift */,
 				04489E2D243569240050964C /* Constants.swift */,
 				04489E2F24356A460050964C /* GithubResults.swift */,
 				04489E3124356A7F0050964C /* User.swift */,
+				04489E3324356E200050964C /* UIImageView+downloadImage.swift */,
 				0421B10124353E26004BF597 /* UserCell.swift */,
 				0421B0F424353AA4004BF597 /* Assets.xcassets */,
 				0421B0F924353AA4004BF597 /* Info.plist */,
@@ -146,10 +155,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04D1C25824357338000C35E0 /* Repos.swift in Sources */,
 				04489E2E243569240050964C /* Constants.swift in Sources */,
+				04D1C25A2435928B000C35E0 /* ProfileViewController.swift in Sources */,
 				0421B10224353E26004BF597 /* UserCell.swift in Sources */,
 				0421B0F024353AA1004BF597 /* ViewController.swift in Sources */,
 				04489E3024356A460050964C /* GithubResults.swift in Sources */,
+				04489E3424356E200050964C /* UIImageView+downloadImage.swift in Sources */,
 				0421B0EC24353AA1004BF597 /* AppDelegate.swift in Sources */,
 				0421B0EE24353AA1004BF597 /* SceneDelegate.swift in Sources */,
 				04489E3224356A7F0050964C /* User.swift in Sources */,
