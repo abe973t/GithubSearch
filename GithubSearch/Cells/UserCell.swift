@@ -19,7 +19,6 @@ class UserCell: UITableViewCell {
     var userNameLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.backgroundColor = .blue
         lbl.text = "UserName"
         return lbl
     }()
@@ -27,7 +26,6 @@ class UserCell: UITableViewCell {
     var repoLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.backgroundColor = .orange
         lbl.text = "Repo: ##"
         return lbl
     }()
@@ -35,6 +33,7 @@ class UserCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        backgroundColor = .systemRed
         addViews()
     }
     
@@ -58,7 +57,7 @@ class UserCell: UITableViewCell {
             userNameLabel.heightAnchor.constraint(equalTo: imgView.heightAnchor),
             userNameLabel.trailingAnchor.constraint(equalTo: repoLabel.leadingAnchor, constant: -10),
             
-            repoLabel.widthAnchor.constraint(equalToConstant: 75),
+            repoLabel.widthAnchor.constraint(equalToConstant: 100),
             repoLabel.topAnchor.constraint(equalTo: userNameLabel.topAnchor),
             repoLabel.heightAnchor.constraint(equalTo: userNameLabel.heightAnchor),
             repoLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)

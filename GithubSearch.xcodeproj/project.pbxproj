@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		0421B0EC24353AA1004BF597 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421B0EB24353AA1004BF597 /* AppDelegate.swift */; };
 		0421B0EE24353AA1004BF597 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421B0ED24353AA1004BF597 /* SceneDelegate.swift */; };
-		0421B0F024353AA1004BF597 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421B0EF24353AA1004BF597 /* ViewController.swift */; };
+		0421B0F024353AA1004BF597 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421B0EF24353AA1004BF597 /* MainViewController.swift */; };
 		0421B0F524353AA4004BF597 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0421B0F424353AA4004BF597 /* Assets.xcassets */; };
 		0421B10024353DC2004BF597 /* T-Mobile iOS Screening.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 0421B0FF24353DC2004BF597 /* T-Mobile iOS Screening.pdf */; };
 		0421B10224353E26004BF597 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421B10124353E26004BF597 /* UserCell.swift */; };
@@ -17,7 +17,8 @@
 		04489E3024356A460050964C /* GithubResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E2F24356A460050964C /* GithubResults.swift */; };
 		04489E3224356A7F0050964C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E3124356A7F0050964C /* User.swift */; };
 		04489E3424356E200050964C /* UIImageView+downloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E3324356E200050964C /* UIImageView+downloadImage.swift */; };
-		04D1C25824357338000C35E0 /* Repos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D1C25724357338000C35E0 /* Repos.swift */; };
+		044CB01F2436085800D6659A /* RepoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044CB01E2436085800D6659A /* RepoCell.swift */; };
+		04D1C25824357338000C35E0 /* Repo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D1C25724357338000C35E0 /* Repo.swift */; };
 		04D1C25A2435928B000C35E0 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D1C2592435928B000C35E0 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,7 +26,7 @@
 		0421B0E824353AA1004BF597 /* GithubSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GithubSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0421B0EB24353AA1004BF597 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0421B0ED24353AA1004BF597 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		0421B0EF24353AA1004BF597 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		0421B0EF24353AA1004BF597 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		0421B0F424353AA4004BF597 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0421B0F924353AA4004BF597 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0421B0FF24353DC2004BF597 /* T-Mobile iOS Screening.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "T-Mobile iOS Screening.pdf"; sourceTree = "<group>"; };
@@ -34,7 +35,8 @@
 		04489E2F24356A460050964C /* GithubResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubResults.swift; sourceTree = "<group>"; };
 		04489E3124356A7F0050964C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		04489E3324356E200050964C /* UIImageView+downloadImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+downloadImage.swift"; sourceTree = "<group>"; };
-		04D1C25724357338000C35E0 /* Repos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repos.swift; sourceTree = "<group>"; };
+		044CB01E2436085800D6659A /* RepoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoCell.swift; sourceTree = "<group>"; };
+		04D1C25724357338000C35E0 /* Repo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repo.swift; sourceTree = "<group>"; };
 		04D1C2592435928B000C35E0 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -71,18 +73,43 @@
 			children = (
 				0421B0EB24353AA1004BF597 /* AppDelegate.swift */,
 				0421B0ED24353AA1004BF597 /* SceneDelegate.swift */,
-				0421B0EF24353AA1004BF597 /* ViewController.swift */,
+				0421B0EF24353AA1004BF597 /* MainViewController.swift */,
 				04D1C2592435928B000C35E0 /* ProfileViewController.swift */,
-				04D1C25724357338000C35E0 /* Repos.swift */,
-				04489E2D243569240050964C /* Constants.swift */,
-				04489E2F24356A460050964C /* GithubResults.swift */,
-				04489E3124356A7F0050964C /* User.swift */,
-				04489E3324356E200050964C /* UIImageView+downloadImage.swift */,
-				0421B10124353E26004BF597 /* UserCell.swift */,
+				044C803D243770150074421A /* Cells */,
+				044C803C24376FFC0074421A /* Models */,
+				044C803E2437702A0074421A /* Tools */,
 				0421B0F424353AA4004BF597 /* Assets.xcassets */,
 				0421B0F924353AA4004BF597 /* Info.plist */,
 			);
 			path = GithubSearch;
+			sourceTree = "<group>";
+		};
+		044C803C24376FFC0074421A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				04D1C25724357338000C35E0 /* Repo.swift */,
+				04489E2F24356A460050964C /* GithubResults.swift */,
+				04489E3124356A7F0050964C /* User.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		044C803D243770150074421A /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				044CB01E2436085800D6659A /* RepoCell.swift */,
+				0421B10124353E26004BF597 /* UserCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		044C803E2437702A0074421A /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				04489E2D243569240050964C /* Constants.swift */,
+				04489E3324356E200050964C /* UIImageView+downloadImage.swift */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,15 +182,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04D1C25824357338000C35E0 /* Repos.swift in Sources */,
+				04D1C25824357338000C35E0 /* Repo.swift in Sources */,
 				04489E2E243569240050964C /* Constants.swift in Sources */,
 				04D1C25A2435928B000C35E0 /* ProfileViewController.swift in Sources */,
 				0421B10224353E26004BF597 /* UserCell.swift in Sources */,
-				0421B0F024353AA1004BF597 /* ViewController.swift in Sources */,
+				0421B0F024353AA1004BF597 /* MainViewController.swift in Sources */,
 				04489E3024356A460050964C /* GithubResults.swift in Sources */,
 				04489E3424356E200050964C /* UIImageView+downloadImage.swift in Sources */,
 				0421B0EC24353AA1004BF597 /* AppDelegate.swift in Sources */,
 				0421B0EE24353AA1004BF597 /* SceneDelegate.swift in Sources */,
+				044CB01F2436085800D6659A /* RepoCell.swift in Sources */,
 				04489E3224356A7F0050964C /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

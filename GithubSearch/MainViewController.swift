@@ -8,7 +8,16 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class MainViewController: UIViewController {
+    
+    /**
+        For example, why MVC over MVVM
+            The assignment did not require testing.
+        Is there a more efficient way of handling image loading?
+            If I had more time I would have implemented NSCaching to cache images
+        Are there any problems with the way you are loading images now that could cause problems?
+            Null image urls are handled gracefully, so I do not see one
+     */
     
     var searchController: UISearchController!
     var users = [User]()
@@ -26,7 +35,8 @@ class ViewController: UIViewController {
         title = "Github Searcher"
         addViews()
         navigationItem.searchController = searchController
-        navigationController?.navigationBar.backgroundColor = .black
+        navigationController?.navigationBar.backgroundColor = .white
+        view.backgroundColor = .white
         tableView.register(UserCell.self, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
@@ -48,10 +58,14 @@ class ViewController: UIViewController {
         ])
     }
     
-    fileprivate func getUser(url: URL, completion: @escaping (User)->Void) {
+    fileprivate func getUser(url: URL, completion: @escaping (User?)->Void) {
         URLSession.shared.dataTask(with: url) { (data, response, err) in
             if let data = data {
                 do {
+                    let responseString = String(decoding: data, as: UTF8.self)
+                    if responseString.contains("rate limit") {
+                        completion(nil)
+                    }
                     let userData = try JSONDecoder().decode(User.self, from: data)
                     completion(userData)
                 } catch {
@@ -60,15 +74,37 @@ class ViewController: UIViewController {
             }
         }.resume()
     }
+    
+    fileprivate func getRepos(url: URL, completion: @escaping (Int)->Void) {
+        URLSession.shared.dataTask(with: url) { (data, response, err) in
+            if let data = data {
+                do {
+                    let userData = try JSONDecoder().decode(User.self, from: data)
+                    completion(userData.public_repos ?? 0)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }.resume()
+    }
 }
 
-extension ViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
+extension MainViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         var timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
             if let text = searchController.searchBar.text, !text.isEmpty, let url = URL(string: Constants.searchUsersEndpoint.rawValue + text) {
                 URLSession.shared.dataTask(with: url) { (data, response, err) in
                     if err == nil, let data = data {
                         do {
+                            let responseString = String(decoding: data, as: UTF8.self)
+                            if responseString.contains("rate limit") {
+                                DispatchQueue.main.async {
+                                    let alert = UIAlertController(title: "Error", message: "API rate limit exceeded. (But here\'s the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)", preferredStyle: .alert)
+                                    let okBtn = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                                    alert.addAction(okBtn)
+                                    self.present(alert, animated: true, completion: nil)
+                                }
+                            }
                             let results = try JSONDecoder().decode(GithubResults.self, from: data)
                             self.users = results.items ?? []
                            
@@ -99,7 +135,7 @@ extension ViewController: UISearchResultsUpdating, UISearchControllerDelegate, U
     }
 }
 
-extension ViewController: UITableViewDataSource, UITableViewDelegate {
+extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count
     }
@@ -110,8 +146,14 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         cell.userNameLabel.text = users[indexPath.row].login
-        cell.imgView.downloadImageFrom(link: users[indexPath.row].avatar_url!, contentMode: .scaleAspectFit)
-//        cell.repoLabel.text = "Repos: \(String(describing: users[indexPath.row].repos))"
+        cell.imgView.downloadImageFrom(link: users[indexPath.row].avatar_url ?? "", contentMode: .scaleAspectFit)
+        if let urlString = users[indexPath.row].url, let url = URL(string: urlString) {
+            getRepos(url: url) { (repos) in
+                DispatchQueue.main.async {
+                    cell.repoLabel.text = "\(repos) Repos"
+                }
+            }
+        }
         
         return cell
     }
