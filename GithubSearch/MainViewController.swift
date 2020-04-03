@@ -124,6 +124,7 @@ extension MainViewController: UISearchResultsUpdating, UISearchControllerDelegat
         searchController = UISearchController(searchResultsController: nil)
         
         searchController!.searchResultsUpdater = self
+        searchController!.obscuresBackgroundDuringPresentation = false
         searchController!.hidesNavigationBarDuringPresentation = false
         searchController!.automaticallyShowsCancelButton = false
         searchController!.delegate = self

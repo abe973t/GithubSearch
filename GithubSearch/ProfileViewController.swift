@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import SafariServices
 
 class ProfileViewController: UIViewController {
     
     var searchController: UISearchController!
     var user: User!
+    var repos = [Repo]()
+    var filteredRepos = [Repo]()
+    var searchMode = false
     
     let aviImage: UIImageView = {
         let img = UIImageView()
@@ -69,56 +73,74 @@ class ProfileViewController: UIViewController {
     let tableView: UITableView = {
         let tblView = UITableView()
         tblView.translatesAutoresizingMaskIntoConstraints = false
-        tblView.backgroundColor = .systemRed
         return tblView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        
+        if user == nil {
+            let alert = UIAlertController(title: "Error", message: "API rate limit exceeded. (But here\'s the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)", preferredStyle: .alert)
+            let okBtn = UIAlertAction(title: "Ok", style: .default, handler: nil)
+            alert.addAction(okBtn)
+            self.present(alert, animated: true, completion: nil)
+        }
         
         addViews()
-        aviImage.downloadImageFrom(link: user.avatar_url!, contentMode: .scaleAspectFit)
-        userNameLabel.text = user.login!
-        emailLabel.text = user.url!     // email not available
-        locationLabel.text = user.location ?? ""
-        joinDateLabel.text = user.created_at ?? ""
-        followersLabel.text = "\(user.followers!) followers"
-        followingLabel.text = "\(user.following!) following"
-        bioLabel.text = user.bio ?? ""
+        aviImage.downloadImageFrom(link: user?.avatar_url ?? "", contentMode: .scaleAspectFit)
+        userNameLabel.text = user?.login ?? ""
+        emailLabel.text = user?.email ?? ""
+        locationLabel.text = user?.location ?? ""
+        joinDateLabel.text = user?.created_at ?? ""
+        followersLabel.text = "\(user?.followers ?? 0) followers"
+        followingLabel.text = "\(user?.following ?? 0) following"
+        bioLabel.text = user?.bio ?? ""
+        tableView.register(RepoCell.self, forCellReuseIdentifier: "cell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        fetchRepos()
     }
     
-    func updateFollowers() {
-        let url = URL(string: user.followers_url!)!
-        URLSession.shared.dataTask(with: url) { (data, response, err) in
-            if let data = data {
-                do {
-                    let followers = try JSONDecoder().decode([User].self, from: data)
-                    
-                    DispatchQueue.main.async {
-                        self.followersLabel.text = "\(followers.count) followers"
-                    }
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-        }.resume()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        searchMode = false
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
-    func updateFollowing() {
-        let url = URL(string: user.following_url!)!
-        URLSession.shared.dataTask(with: url) { (data, response, err) in
-            if let data = data {
-                do {
-                    let following = try JSONDecoder().decode([User].self, from: data)
-                    
-                    DispatchQueue.main.async {
-                        self.followingLabel.text = "\(following.count) followers"
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        searchController.isActive = false
+    }
+    
+    func fetchRepos() {
+        if let urlString = user?.repos_url, let url = URL(string: urlString) {
+            URLSession.shared.dataTask(with: url) { (data, response, err) in
+                if let data = data {
+                    do {
+                        let responseString = String(decoding: data, as: UTF8.self)
+                        if responseString.contains("rate limit") {
+                            DispatchQueue.main.async {
+                                let alert = UIAlertController(title: "Error", message: "API rate limit exceeded. (But here\'s the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)", preferredStyle: .alert)
+                                let okBtn = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                                alert.addAction(okBtn)
+                                self.present(alert, animated: true, completion: nil)
+                            }
+                        }
+                        self.repos = try JSONDecoder().decode([Repo].self, from: data)
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
+                    } catch {
+                        print(error.localizedDescription)
                     }
-                } catch {
-                    print(error.localizedDescription)
                 }
-            }
-        }.resume()
+            }.resume()
+        }
     }
     
     func addViews() {
@@ -132,6 +154,7 @@ class ProfileViewController: UIViewController {
         view.addSubview(followingLabel)
         view.addSubview(bioLabel)
         view.addSubview(tableView)
+        tableView.tableHeaderView = searchController.searchBar
 
         addContraints()
     }
@@ -151,7 +174,6 @@ class ProfileViewController: UIViewController {
             emailLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 5),
             emailLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
             emailLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-//            emailLabel.heightAnchor.constraint(equalToConstant: 32),
             
             locationLabel.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 15),
             locationLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
@@ -187,6 +209,25 @@ class ProfileViewController: UIViewController {
 
 extension ProfileViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
+        if let text = searchController.searchBar.text, !text.isEmpty {
+//            searchController.obscuresBackgroundDuringPresentation = false
+            searchMode = true
+            
+            filteredRepos = repos.filter({ (repo) -> Bool in
+                return (repo.name?.lowercased().contains(text.lowercased()))!
+            })
+        } else {
+//            searchController.obscuresBackgroundDuringPresentation = true
+            searchMode = false
+        }
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchMode = false
     }
     
     func configureSearchBar() {
@@ -194,12 +235,43 @@ extension ProfileViewController: UISearchResultsUpdating, UISearchControllerDele
         
         searchController!.searchResultsUpdater = self
         searchController!.hidesNavigationBarDuringPresentation = false
-        searchController!.automaticallyShowsCancelButton = false
+        searchController!.obscuresBackgroundDuringPresentation = false
         searchController!.delegate = self
-        searchController!.searchBar.sizeToFit()
-        searchController!.searchBar.showsCancelButton = true
         searchController!.searchBar.delegate = self
-        searchController!.searchBar.showsCancelButton = false
-        searchController?.searchBar.placeholder = "Search for users"
+        searchController?.searchBar.placeholder = "Search Repos"
+    }
+}
+
+extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return searchMode ? filteredRepos.count : repos.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as? RepoCell else {
+            return UITableViewCell()
+        }
+        
+        let repo = searchMode ? filteredRepos[indexPath.row] : repos[indexPath.row]
+        
+        cell.userNameLabel.text = repo.name
+        cell.forksLabel.text = "\(repo.forks ?? 0) Forks"
+        cell.starsLabel.text = "\(repo.stargazers_count ?? 0) Stars"
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        searchController.isActive = false
+        let repo = searchMode ? filteredRepos[indexPath.row] : repos[indexPath.row]
+        
+        if let urlString = repo.html_url, let url = URL(string: urlString) {
+            let safari = SFSafariViewController(url: url)
+            navigationController?.present(safari, animated: true, completion: nil)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
     }
 }
