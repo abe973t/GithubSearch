@@ -11,16 +11,21 @@ import UIKit
 class MainViewController: UIViewController {
     
     /**
-        For example, why MVC over MVVM
-            The assignment did not require testing.
-        Is there a more efficient way of handling image loading?
-            If I had more time I would have implemented NSCaching to cache images
-        Are there any problems with the way you are loading images now that could cause problems?
-            Null image urls are handled gracefully, so I do not see one
+        Potential Questions:
+            - For example, why MVC over MVVM?
+                The assignment did not require testing.
+            - Is there a more efficient way of handling image loading?
+                If I had more time I would have implemented NSCaching to cache images.
+            - Are there any problems with the way you are loading images now that could cause problems?
+                Null image urls are handled gracefully, so I do not see one.
+     
+        TODO:
+            - fix search controller issue
      */
     
     var searchController: UISearchController!
     var users = [User]()
+    var cache = NSCache<NSString, UIImage>()
     
     let tableView: UITableView = {
         let tblView = UITableView()
@@ -147,7 +152,14 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         cell.userNameLabel.text = users[indexPath.row].login
-        cell.imgView.downloadImageFrom(link: users[indexPath.row].avatar_url ?? "", contentMode: .scaleAspectFit)
+        if let imgURL = users[indexPath.row].avatar_url {
+            if let image = cache.object(forKey: imgURL as NSString) {
+                cell.imgView.image = image
+            } else {
+                cell.imgView.downloadImageFrom(link: imgURL, contentMode: .scaleAspectFit, cache: cache)
+            }
+        }
+        
         if let urlString = users[indexPath.row].url, let url = URL(string: urlString) {
             getRepos(url: url) { (repos) in
                 DispatchQueue.main.async {

@@ -16,6 +16,7 @@ class ProfileViewController: UIViewController {
     var repos = [Repo]()
     var filteredRepos = [Repo]()
     var searchMode = false
+    var cache = NSCache<NSString, UIImage>()
     
     let aviImage: UIImageView = {
         let img = UIImageView()
@@ -88,7 +89,7 @@ class ProfileViewController: UIViewController {
         }
         
         addViews()
-        aviImage.downloadImageFrom(link: user?.avatar_url ?? "", contentMode: .scaleAspectFit)
+        aviImage.downloadImageFrom(link: user?.avatar_url ?? "", contentMode: .scaleAspectFit, cache: cache)
         userNameLabel.text = user?.login ?? ""
         emailLabel.text = user?.email ?? ""
         locationLabel.text = user?.location ?? ""
@@ -125,7 +126,7 @@ class ProfileViewController: UIViewController {
                         let responseString = String(decoding: data, as: UTF8.self)
                         if responseString.contains("rate limit") {
                             DispatchQueue.main.async {
-                                let alert = UIAlertController(title: "Error", message: "API rate limit exceeded. (But here\'s the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)", preferredStyle: .alert)
+                                let alert = UIAlertController(title: "Error", message: "API rate limit exceeded. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)", preferredStyle: .alert)
                                 let okBtn = UIAlertAction(title: "Ok", style: .default, handler: nil)
                                 alert.addAction(okBtn)
                                 self.present(alert, animated: true, completion: nil)
@@ -210,14 +211,12 @@ class ProfileViewController: UIViewController {
 extension ProfileViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         if let text = searchController.searchBar.text, !text.isEmpty {
-//            searchController.obscuresBackgroundDuringPresentation = false
             searchMode = true
             
             filteredRepos = repos.filter({ (repo) -> Bool in
                 return (repo.name?.lowercased().contains(text.lowercased()))!
             })
         } else {
-//            searchController.obscuresBackgroundDuringPresentation = true
             searchMode = false
         }
         
@@ -238,7 +237,7 @@ extension ProfileViewController: UISearchResultsUpdating, UISearchControllerDele
         searchController!.obscuresBackgroundDuringPresentation = false
         searchController!.delegate = self
         searchController!.searchBar.delegate = self
-        searchController?.searchBar.placeholder = "Search Repos"
+        searchController!.searchBar.placeholder = "Search Repos"
     }
 }
 
