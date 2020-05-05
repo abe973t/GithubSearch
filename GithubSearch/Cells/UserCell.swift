@@ -47,8 +47,11 @@ class UserCell: UITableViewCell {
     }
     
     func addConstraints() {
+        let contentViewHeightConstraint = contentView.heightAnchor.constraint(equalToConstant: 80)
+        contentViewHeightConstraint.priority = UILayoutPriority(rawValue: 999)
+        
         NSLayoutConstraint.activate([
-            contentView.heightAnchor.constraint(equalToConstant: 80),
+            contentViewHeightConstraint,
             
             imgView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             imgView.topAnchor.constraint(equalTo: topAnchor, constant: 10),

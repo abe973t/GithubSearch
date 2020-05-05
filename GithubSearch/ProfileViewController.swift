@@ -21,13 +21,14 @@ class ProfileViewController: UIViewController {
     let aviImage: UIImageView = {
         let img = UIImageView()
         img.translatesAutoresizingMaskIntoConstraints = false
-        img.backgroundColor = .systemRed
         return img
     }()
     
     let userNameLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
+        lbl.numberOfLines = 0
+//        lbl.sizeToFit()
         return lbl
     }()
     
@@ -35,31 +36,36 @@ class ProfileViewController: UIViewController {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.numberOfLines = 0
-        lbl.sizeToFit()
+//        lbl.sizeToFit()
         return lbl
     }()
     
     let locationLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
+        lbl.numberOfLines = 0
+//        lbl.sizeToFit()
         return lbl
     }()
     
     let joinDateLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
+        lbl.numberOfLines = 0
         return lbl
     }()
     
     let followersLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
+        lbl.numberOfLines = 0
         return lbl
     }()
     
     let followingLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
+        lbl.numberOfLines = 0
         return lbl
     }()
     
@@ -67,7 +73,7 @@ class ProfileViewController: UIViewController {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.numberOfLines = 0
-        lbl.sizeToFit()
+//        lbl.sizeToFit()
         return lbl
     }()
     
@@ -90,32 +96,19 @@ class ProfileViewController: UIViewController {
         
         addViews()
         aviImage.downloadImageFrom(link: user?.avatarUrl ?? "", contentMode: .scaleAspectFit, cache: cache)
-        userNameLabel.text = user?.login ?? ""
-        emailLabel.text = user?.email ?? ""
-        locationLabel.text = user?.location ?? ""
-        joinDateLabel.text = "Joined: " + convertDateFormatter(date: user?.createdAt ?? "")
+        userNameLabel.text = "User: \(user?.login ?? "N/A")"
+        emailLabel.text = "Email: \(user?.email ?? "N/A")"
+        locationLabel.text = "Location: \(user?.location ?? "N/A")"
+        joinDateLabel.text = "Joined: " + convertDateFormatter(date: user?.createdAt ?? "N/A")
         followersLabel.text = "\(user?.followers ?? 0) followers"
         followingLabel.text = "\(user?.following ?? 0) following"
         bioLabel.text = user?.bio ?? ""
+        
         tableView.register(RepoCell.self, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
+        
         fetchRepos()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        searchMode = false
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        searchController.isActive = false
     }
     
     func convertDateFormatter(date: String) -> String {
@@ -197,7 +190,7 @@ class ProfileViewController: UIViewController {
             locationLabel.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 15),
             locationLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
             locationLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            locationLabel.heightAnchor.constraint(equalToConstant: 32),
+//            locationLabel.heightAnchor.constraint(equalToConstant: 32),
             
             joinDateLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 15),
             joinDateLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),

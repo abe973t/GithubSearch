@@ -44,8 +44,11 @@ class RepoCell: UITableViewCell {
     }
     
     func addConstraints() {
+        let contentViewHeightConstraint = contentView.heightAnchor.constraint(equalToConstant: 80)
+        contentViewHeightConstraint.priority = UILayoutPriority(rawValue: 999)
+        
         NSLayoutConstraint.activate([
-            contentView.heightAnchor.constraint(equalToConstant: 80),
+            contentViewHeightConstraint,
             
             userNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             userNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10),
