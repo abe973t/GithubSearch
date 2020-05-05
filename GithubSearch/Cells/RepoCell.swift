@@ -45,6 +45,8 @@ class RepoCell: UITableViewCell {
     
     func addConstraints() {
         NSLayoutConstraint.activate([
+            contentView.heightAnchor.constraint(equalToConstant: 80),
+            
             userNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             userNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             userNameLabel.heightAnchor.constraint(equalToConstant: 32),
@@ -66,4 +68,3 @@ class RepoCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
