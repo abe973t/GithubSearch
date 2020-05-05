@@ -10,9 +10,7 @@ import UIKit
 
 class MainViewController: UIViewController {
     
-    // contrainsts for tableviewcells
     // separate auth token
-    // join getUser & getRepo
     // fix layout on profile pg
     // label things on profile pg
     
@@ -23,18 +21,18 @@ class MainViewController: UIViewController {
     let tableView: UITableView = {
         let tblView = UITableView()
         tblView.translatesAutoresizingMaskIntoConstraints = false
-        tblView.backgroundColor = .systemRed
+        tblView.separatorColor = .black
+        
         return tblView
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         title = "Github Searcher"
-        addViews()
-        navigationItem.searchController = searchController
         navigationController?.navigationBar.backgroundColor = .white
         view.backgroundColor = .white
+        
+        addViews()
         tableView.register(UserCell.self, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
@@ -43,7 +41,7 @@ class MainViewController: UIViewController {
     func addViews() {
         configureSearchBar()
         view.addSubview(tableView)
-
+        navigationItem.searchController = searchController
         addContraints()
     }
     
