@@ -74,21 +74,6 @@ class MainViewController: UIViewController {
             }
         }.resume()
     }
-    
-    fileprivate func getRepos(url: URL, completion: @escaping (Int)->Void) {
-        var urlRequest = URLRequest(url: url)
-        urlRequest.addValue("token 970cfb23110f001b9a23e0ca6e649f918f508ef9", forHTTPHeaderField: "Authorization")
-        URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
-            if let data = data {
-                do {
-                    let userData = try JSONDecoder().decode(User.self, from: data)
-                    completion(userData.publicRepos ?? 0)
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-        }.resume()
-    }
 }
 
 extension MainViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
@@ -159,9 +144,12 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         if let urlString = users[indexPath.row].url, let url = URL(string: urlString) {
-            getRepos(url: url) { (repos) in
-                DispatchQueue.main.async {
-                    cell.repoLabel.text = "\(repos) Repos"
+            getUser(url: url) { (userData) in
+                if let user = userData, let numOfRepos = user.publicRepos {
+                    DispatchQueue.main.async {
+                        cell.user = user
+                        cell.repoLabel.text = "\(numOfRepos) Repos"
+                    }
                 }
             }
         }
@@ -170,13 +158,11 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let urlString = users[indexPath.row].url, let url = URL(string: urlString) {
-            getUser(url: url) { (user) in
-                DispatchQueue.main.async {
-                    let pVC = ProfileViewController()
-                    pVC.user = user
-                    self.navigationController?.pushViewController(pVC, animated: true)
-                }
+        if let userCell = tableView.cellForRow(at: indexPath) as? UserCell {
+            DispatchQueue.main.async {
+                let pVC = ProfileViewController()
+                pVC.user = userCell.user
+                self.navigationController?.pushViewController(pVC, animated: true)
             }
         }
     }

@@ -10,6 +10,8 @@ import UIKit
 
 class UserCell: UITableViewCell {
     
+    var user: User?
+    
     var imgView: UIImageView = {
         let imgView = UIImageView()
         imgView.translatesAutoresizingMaskIntoConstraints = false
