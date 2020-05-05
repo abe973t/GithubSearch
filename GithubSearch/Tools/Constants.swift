@@ -11,4 +11,5 @@ import Foundation
 enum Constants: String {
     case searchUsersEndpoint = "https://api.github.com/search/users?q="
     case userReposEndpoint = "https://api.github.com/users/"
+    case token = "token 970cfb23110f001b9a23e0ca6e649f918f508ef9"
 }

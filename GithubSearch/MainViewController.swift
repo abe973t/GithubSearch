@@ -9,11 +9,7 @@
 import UIKit
 
 class MainViewController: UIViewController {
-    
-    // separate auth token
-    // fix layout on profile pg
-    // label things on profile pg
-    
+        
     var searchController: UISearchController!
     var users = [User]()
     var cache = NSCache<NSString, UIImage>()
@@ -56,7 +52,8 @@ class MainViewController: UIViewController {
     
     fileprivate func getUser(url: URL, completion: @escaping (User?)->Void) {
         var urlRequest = URLRequest(url: url)
-        urlRequest.addValue("token 970cfb23110f001b9a23e0ca6e649f918f508ef9", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue(Constants.token.rawValue, forHTTPHeaderField: "Authorization")
+        
         URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
             if let data = data {
                 do {
@@ -78,7 +75,7 @@ extension MainViewController: UISearchResultsUpdating, UISearchControllerDelegat
     func updateSearchResults(for searchController: UISearchController) {
         if let text = searchController.searchBar.text, !text.isEmpty, let url = URL(string: Constants.searchUsersEndpoint.rawValue + text) {
             var urlRequest = URLRequest(url: url)
-            urlRequest.addValue("token 970cfb23110f001b9a23e0ca6e649f918f508ef9", forHTTPHeaderField: "Authorization")
+            urlRequest.addValue(Constants.token.rawValue, forHTTPHeaderField: "Authorization")
             
             URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
                 if err == nil, let data = data {
@@ -160,6 +157,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
             DispatchQueue.main.async {
                 let pVC = ProfileViewController()
                 pVC.user = userCell.user
+                pVC.cache = self.cache
                 self.navigationController?.pushViewController(pVC, animated: true)
             }
         }

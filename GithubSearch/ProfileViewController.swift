@@ -16,7 +16,7 @@ class ProfileViewController: UIViewController {
     var repos = [Repo]()
     var filteredRepos = [Repo]()
     var searchMode = false
-    var cache = NSCache<NSString, UIImage>()
+    var cache: NSCache<NSString, UIImage>?
     
     let aviImage: UIImageView = {
         let img = UIImageView()
@@ -28,7 +28,6 @@ class ProfileViewController: UIViewController {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.numberOfLines = 0
-//        lbl.sizeToFit()
         return lbl
     }()
     
@@ -36,7 +35,6 @@ class ProfileViewController: UIViewController {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.numberOfLines = 0
-//        lbl.sizeToFit()
         return lbl
     }()
     
@@ -44,7 +42,6 @@ class ProfileViewController: UIViewController {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.numberOfLines = 0
-//        lbl.sizeToFit()
         return lbl
     }()
     
@@ -73,7 +70,6 @@ class ProfileViewController: UIViewController {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.numberOfLines = 0
-//        lbl.sizeToFit()
         return lbl
     }()
     
@@ -95,7 +91,7 @@ class ProfileViewController: UIViewController {
         }
         
         addViews()
-        aviImage.downloadImageFrom(link: user?.avatarUrl ?? "", contentMode: .scaleAspectFit, cache: cache)
+        aviImage.downloadImageFrom(link: user?.avatarUrl ?? "", contentMode: .scaleAspectFit, cache: cache!)
         userNameLabel.text = "User: \(user?.login ?? "N/A")"
         emailLabel.text = "Email: \(user?.email ?? "N/A")"
         locationLabel.text = "Location: \(user?.location ?? "N/A")"
@@ -129,7 +125,8 @@ class ProfileViewController: UIViewController {
     func fetchRepos() {
         if let urlString = user?.reposUrl, let url = URL(string: urlString) {
             var urlRequest = URLRequest(url: url)
-            urlRequest.addValue("token 970cfb23110f001b9a23e0ca6e649f918f508ef9", forHTTPHeaderField: "Authorization")
+            urlRequest.addValue(Constants.token.rawValue, forHTTPHeaderField: "Authorization")
+            
             URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
                 if let data = data {
                     do {
@@ -190,7 +187,6 @@ class ProfileViewController: UIViewController {
             locationLabel.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 15),
             locationLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
             locationLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-//            locationLabel.heightAnchor.constraint(equalToConstant: 32),
             
             joinDateLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 15),
             joinDateLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
@@ -244,12 +240,12 @@ extension ProfileViewController: UISearchResultsUpdating, UISearchControllerDele
     func configureSearchBar() {
         searchController = UISearchController(searchResultsController: nil)
         
-        searchController!.searchResultsUpdater = self
-        searchController!.hidesNavigationBarDuringPresentation = false
-        searchController!.obscuresBackgroundDuringPresentation = false
-        searchController!.delegate = self
-        searchController!.searchBar.delegate = self
-        searchController!.searchBar.placeholder = "Search Repos"
+        searchController.searchResultsUpdater = self
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.delegate = self
+        searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = "Search Repos"
     }
 }
 
