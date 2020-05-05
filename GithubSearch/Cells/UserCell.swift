@@ -47,6 +47,8 @@ class UserCell: UITableViewCell {
     
     func addConstraints() {
         NSLayoutConstraint.activate([
+            contentView.heightAnchor.constraint(equalToConstant: 80),
+            
             imgView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             imgView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             imgView.heightAnchor.constraint(equalToConstant: 60),

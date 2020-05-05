@@ -10,18 +10,11 @@ import UIKit
 
 class MainViewController: UIViewController {
     
-    /**
-        Potential Questions:
-            - For example, why MVC over MVVM?
-                The assignment did not require testing.
-            - Is there a more efficient way of handling image loading?
-                If I had more time I would have implemented NSCaching to cache images.
-            - Are there any problems with the way you are loading images now that could cause problems?
-                Null image urls are handled gracefully, so I do not see one.
-     
-        TODO:
-            - fix search controller issue
-     */
+    // contrainsts for tableviewcells
+    // separate auth token
+    // join getUser & getRepo
+    // fix layout on profile pg
+    // label things on profile pg
     
     var searchController: UISearchController!
     var users = [User]()
@@ -64,7 +57,9 @@ class MainViewController: UIViewController {
     }
     
     fileprivate func getUser(url: URL, completion: @escaping (User?)->Void) {
-        URLSession.shared.dataTask(with: url) { (data, response, err) in
+        var urlRequest = URLRequest(url: url)
+        urlRequest.addValue("token 970cfb23110f001b9a23e0ca6e649f918f508ef9", forHTTPHeaderField: "Authorization")
+        URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
             if let data = data {
                 do {
                     let responseString = String(decoding: data, as: UTF8.self)
@@ -81,11 +76,13 @@ class MainViewController: UIViewController {
     }
     
     fileprivate func getRepos(url: URL, completion: @escaping (Int)->Void) {
-        URLSession.shared.dataTask(with: url) { (data, response, err) in
+        var urlRequest = URLRequest(url: url)
+        urlRequest.addValue("token 970cfb23110f001b9a23e0ca6e649f918f508ef9", forHTTPHeaderField: "Authorization")
+        URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
             if let data = data {
                 do {
                     let userData = try JSONDecoder().decode(User.self, from: data)
-                    completion(userData.public_repos ?? 0)
+                    completion(userData.publicRepos ?? 0)
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -96,48 +93,49 @@ class MainViewController: UIViewController {
 
 extension MainViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
-        var timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
-            if let text = searchController.searchBar.text, !text.isEmpty, let url = URL(string: Constants.searchUsersEndpoint.rawValue + text) {
-                URLSession.shared.dataTask(with: url) { (data, response, err) in
-                    if err == nil, let data = data {
-                        do {
-                            let responseString = String(decoding: data, as: UTF8.self)
-                            if responseString.contains("rate limit") {
-                                DispatchQueue.main.async {
-                                    let alert = UIAlertController(title: "Error", message: "API rate limit exceeded. (But here\'s the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)", preferredStyle: .alert)
-                                    let okBtn = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                                    alert.addAction(okBtn)
-                                    self.present(alert, animated: true, completion: nil)
-                                }
-                            }
-                            let results = try JSONDecoder().decode(GithubResults.self, from: data)
-                            self.users = results.items ?? []
-                           
+        if let text = searchController.searchBar.text, !text.isEmpty, let url = URL(string: Constants.searchUsersEndpoint.rawValue + text) {
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("token 970cfb23110f001b9a23e0ca6e649f918f508ef9", forHTTPHeaderField: "Authorization")
+            
+            URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
+                if err == nil, let data = data {
+                    do {
+                        let responseString = String(decoding: data, as: UTF8.self)
+                        if responseString.contains("rate limit") {
                             DispatchQueue.main.async {
-                                self.tableView.reloadData()
+                                let alert = UIAlertController(title: "Error", message: "API rate limit exceeded. (But here\'s the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)", preferredStyle: .alert)
+                                let okBtn = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                                alert.addAction(okBtn)
+                                self.present(alert, animated: true, completion: nil)
                             }
-                        } catch {
-                            print(error.localizedDescription)
                         }
+                        let results = try JSONDecoder().decode(GithubResults.self, from: data)
+                        self.users = results.items ?? []
+                       
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
+                    } catch {
+                        print(error.localizedDescription)
                     }
-                }.resume()
-            }
+                }
+            }.resume()
         }
     }
     
     func configureSearchBar() {
         searchController = UISearchController(searchResultsController: nil)
         
-        searchController!.searchResultsUpdater = self
-        searchController!.obscuresBackgroundDuringPresentation = false
-        searchController!.hidesNavigationBarDuringPresentation = false
-        searchController!.automaticallyShowsCancelButton = false
-        searchController!.delegate = self
-        searchController!.searchBar.sizeToFit()
-        searchController!.searchBar.showsCancelButton = true
-        searchController!.searchBar.delegate = self
-        searchController!.searchBar.showsCancelButton = false
-        searchController?.searchBar.placeholder = "Search for users"
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.automaticallyShowsCancelButton = false
+        searchController.delegate = self
+        searchController.searchBar.sizeToFit()
+        searchController.searchBar.showsCancelButton = true
+        searchController.searchBar.delegate = self
+        searchController.searchBar.showsCancelButton = false
+        searchController.searchBar.placeholder = "Search for users"
     }
 }
 
@@ -152,7 +150,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         cell.userNameLabel.text = users[indexPath.row].login
-        if let imgURL = users[indexPath.row].avatar_url {
+        if let imgURL = users[indexPath.row].avatarUrl {
             if let image = cache.object(forKey: imgURL as NSString) {
                 cell.imgView.image = image
             } else {
@@ -181,9 +179,5 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
                 }
             }
         }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
     }
 }

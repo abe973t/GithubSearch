@@ -89,11 +89,11 @@ class ProfileViewController: UIViewController {
         }
         
         addViews()
-        aviImage.downloadImageFrom(link: user?.avatar_url ?? "", contentMode: .scaleAspectFit, cache: cache)
+        aviImage.downloadImageFrom(link: user?.avatarUrl ?? "", contentMode: .scaleAspectFit, cache: cache)
         userNameLabel.text = user?.login ?? ""
         emailLabel.text = user?.email ?? ""
         locationLabel.text = user?.location ?? ""
-        joinDateLabel.text = user?.created_at ?? ""
+        joinDateLabel.text = "Joined: " + convertDateFormatter(date: user?.createdAt ?? "")
         followersLabel.text = "\(user?.followers ?? 0) followers"
         followingLabel.text = "\(user?.following ?? 0) following"
         bioLabel.text = user?.bio ?? ""
@@ -118,9 +118,26 @@ class ProfileViewController: UIViewController {
         searchController.isActive = false
     }
     
+    func convertDateFormatter(date: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        let convertedDate = dateFormatter.date(from: date)
+
+        guard dateFormatter.date(from: date) != nil else {
+            return ""
+        }
+
+        dateFormatter.dateFormat = "MMM dd, yyyy"
+        let timeStamp = dateFormatter.string(from: convertedDate!)
+
+        return timeStamp
+    }
+    
     func fetchRepos() {
-        if let urlString = user?.repos_url, let url = URL(string: urlString) {
-            URLSession.shared.dataTask(with: url) { (data, response, err) in
+        if let urlString = user?.reposUrl, let url = URL(string: urlString) {
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("token 970cfb23110f001b9a23e0ca6e649f918f508ef9", forHTTPHeaderField: "Authorization")
+            URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
                 if let data = data {
                     do {
                         let responseString = String(decoding: data, as: UTF8.self)
@@ -132,6 +149,7 @@ class ProfileViewController: UIViewController {
                                 self.present(alert, animated: true, completion: nil)
                             }
                         }
+                        
                         self.repos = try JSONDecoder().decode([Repo].self, from: data)
                         DispatchQueue.main.async {
                             self.tableView.reloadData()
@@ -208,6 +226,7 @@ class ProfileViewController: UIViewController {
     }
 }
 
+// MARK: - SearchBar Extensions
 extension ProfileViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         if let text = searchController.searchBar.text, !text.isEmpty {
@@ -241,6 +260,7 @@ extension ProfileViewController: UISearchResultsUpdating, UISearchControllerDele
     }
 }
 
+// MARK: - TableView Extensions
 extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchMode ? filteredRepos.count : repos.count
@@ -255,7 +275,7 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
         
         cell.userNameLabel.text = repo.name
         cell.forksLabel.text = "\(repo.forks ?? 0) Forks"
-        cell.starsLabel.text = "\(repo.stargazers_count ?? 0) Stars"
+        cell.starsLabel.text = "\(repo.stargazersCount ?? 0) Stars"
         
         return cell
     }
@@ -264,7 +284,7 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
         searchController.isActive = false
         let repo = searchMode ? filteredRepos[indexPath.row] : repos[indexPath.row]
         
-        if let urlString = repo.html_url, let url = URL(string: urlString) {
+        if let urlString = repo.htmlUrl, let url = URL(string: urlString) {
             let safari = SFSafariViewController(url: url)
             navigationController?.present(safari, animated: true, completion: nil)
         }

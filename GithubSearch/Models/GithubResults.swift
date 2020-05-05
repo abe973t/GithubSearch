@@ -8,8 +8,14 @@
 
 import Foundation
 
-struct GithubResults : Codable {
-    let total_count : Int?
-    let incomplete_results : Bool?
+struct GithubResults: Codable {
+    let totalCount: Int?
+    let incompleteResults: Bool?
     let items: [User]?
+    
+    enum CodingKeys: String, CodingKey {
+        case totalCount = "total_count"
+        case incompleteResults = "incomplete_results"
+        case items
+    }
 }
