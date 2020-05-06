@@ -18,6 +18,12 @@
 		04489E3224356A7F0050964C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E3124356A7F0050964C /* User.swift */; };
 		04489E3424356E200050964C /* UIImageView+downloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04489E3324356E200050964C /* UIImageView+downloadImage.swift */; };
 		044CB01F2436085800D6659A /* RepoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044CB01E2436085800D6659A /* RepoCell.swift */; };
+		04AACDDA246201AA007B1D8C /* ATNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04AACDD9246201AA007B1D8C /* ATNetworking.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		04AACDE3246208BD007B1D8C /* URLRequest+init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AACDDD246208BC007B1D8C /* URLRequest+init.swift */; };
+		04AACDE4246208BD007B1D8C /* ResourceObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AACDDE246208BC007B1D8C /* ResourceObject.swift */; };
+		04AACDE5246208BD007B1D8C /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AACDDF246208BC007B1D8C /* NetworkManager.swift */; };
+		04AACDE6246208BD007B1D8C /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AACDE0246208BC007B1D8C /* HTTPMethod.swift */; };
+		04AACDE7246208BD007B1D8C /* ResourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AACDE1246208BC007B1D8C /* ResourceData.swift */; };
 		04D1C25824357338000C35E0 /* Repo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D1C25724357338000C35E0 /* Repo.swift */; };
 		04D1C25A2435928B000C35E0 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D1C2592435928B000C35E0 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
@@ -36,6 +42,15 @@
 		04489E3124356A7F0050964C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		04489E3324356E200050964C /* UIImageView+downloadImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+downloadImage.swift"; sourceTree = "<group>"; };
 		044CB01E2436085800D6659A /* RepoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoCell.swift; sourceTree = "<group>"; };
+		04AACDD724620143007B1D8C /* ATNetworking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ATNetworking.h; path = GithubSearch/ATNetworking.h; sourceTree = "<group>"; };
+		04AACDD9246201AA007B1D8C /* ATNetworking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ATNetworking.framework; sourceTree = "<group>"; };
+		04AACDDC246208BC007B1D8C /* ATNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATNetworking.h; sourceTree = "<group>"; };
+		04AACDDD246208BC007B1D8C /* URLRequest+init.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+init.swift"; sourceTree = "<group>"; };
+		04AACDDE246208BC007B1D8C /* ResourceObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceObject.swift; sourceTree = "<group>"; };
+		04AACDDF246208BC007B1D8C /* NetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		04AACDE0246208BC007B1D8C /* HTTPMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		04AACDE1246208BC007B1D8C /* ResourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceData.swift; sourceTree = "<group>"; };
+		04AACDE2246208BC007B1D8C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04D1C25724357338000C35E0 /* Repo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repo.swift; sourceTree = "<group>"; };
 		04D1C2592435928B000C35E0 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -45,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04AACDDA246201AA007B1D8C /* ATNetworking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +73,7 @@
 				0421B0FF24353DC2004BF597 /* T-Mobile iOS Screening.pdf */,
 				0421B0EA24353AA1004BF597 /* GithubSearch */,
 				0421B0E924353AA1004BF597 /* Products */,
+				04AACDD624620143007B1D8C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,6 +96,8 @@
 				044C803C24376FFC0074421A /* Models */,
 				044C803E2437702A0074421A /* Tools */,
 				0421B0F424353AA4004BF597 /* Assets.xcassets */,
+				04AACDDB246208BC007B1D8C /* ATNetworking */,
+				04AACDD9246201AA007B1D8C /* ATNetworking.framework */,
 				0421B0F924353AA4004BF597 /* Info.plist */,
 			);
 			path = GithubSearch;
@@ -110,6 +129,28 @@
 				04489E3324356E200050964C /* UIImageView+downloadImage.swift */,
 			);
 			path = Tools;
+			sourceTree = "<group>";
+		};
+		04AACDD624620143007B1D8C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				04AACDD724620143007B1D8C /* ATNetworking.h */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		04AACDDB246208BC007B1D8C /* ATNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				04AACDDC246208BC007B1D8C /* ATNetworking.h */,
+				04AACDDD246208BC007B1D8C /* URLRequest+init.swift */,
+				04AACDDE246208BC007B1D8C /* ResourceObject.swift */,
+				04AACDDF246208BC007B1D8C /* NetworkManager.swift */,
+				04AACDE0246208BC007B1D8C /* HTTPMethod.swift */,
+				04AACDE1246208BC007B1D8C /* ResourceData.swift */,
+				04AACDE2246208BC007B1D8C /* Info.plist */,
+			);
+			path = ATNetworking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,11 +229,16 @@
 				0421B10224353E26004BF597 /* UserCell.swift in Sources */,
 				0421B0F024353AA1004BF597 /* MainViewController.swift in Sources */,
 				04489E3024356A460050964C /* GithubResults.swift in Sources */,
+				04AACDE4246208BD007B1D8C /* ResourceObject.swift in Sources */,
 				04489E3424356E200050964C /* UIImageView+downloadImage.swift in Sources */,
+				04AACDE6246208BD007B1D8C /* HTTPMethod.swift in Sources */,
+				04AACDE3246208BD007B1D8C /* URLRequest+init.swift in Sources */,
 				0421B0EC24353AA1004BF597 /* AppDelegate.swift in Sources */,
+				04AACDE5246208BD007B1D8C /* NetworkManager.swift in Sources */,
 				0421B0EE24353AA1004BF597 /* SceneDelegate.swift in Sources */,
 				044CB01F2436085800D6659A /* RepoCell.swift in Sources */,
 				04489E3224356A7F0050964C /* User.swift in Sources */,
+				04AACDE7246208BD007B1D8C /* ResourceData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +365,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YZ49UPFS2X;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GithubSearch",
+				);
 				INFOPLIST_FILE = GithubSearch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -337,6 +387,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YZ49UPFS2X;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GithubSearch",
+				);
 				INFOPLIST_FILE = GithubSearch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -1,0 +1,11 @@
+framework module ATNetworking {
+  umbrella header "ATNetworking.h"
+
+  export *
+  module * { export * }
+}
+
+module ATNetworking.Swift {
+    header "ATNetworking-Swift.h"
+    requires objc
+}

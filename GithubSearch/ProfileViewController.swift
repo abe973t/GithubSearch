@@ -16,7 +16,7 @@ class ProfileViewController: UIViewController {
     var repos = [Repo]()
     var filteredRepos = [Repo]()
     var searchMode = false
-    var cache: NSCache<NSString, UIImage>?
+    var cache: NSCache<NSString, UIImage>!
     
     let aviImage: UIImageView = {
         let img = UIImageView()
@@ -91,13 +91,13 @@ class ProfileViewController: UIViewController {
         }
         
         addViews()
-        aviImage.downloadImageFrom(link: user?.avatarUrl ?? "", contentMode: .scaleAspectFit, cache: cache!)
+        aviImage.downloadImageFrom(link: user?.avatarUrl ?? "", contentMode: .scaleAspectFit, cache: cache)
         userNameLabel.text = "User: \(user?.login ?? "N/A")"
         emailLabel.text = "Email: \(user?.email ?? "N/A")"
         locationLabel.text = "Location: \(user?.location ?? "N/A")"
         joinDateLabel.text = "Joined: " + convertDateFormatter(date: user?.createdAt ?? "N/A")
         followersLabel.text = "\(user?.followers ?? 0) followers"
-        followingLabel.text = "\(user?.following ?? 0) following"
+        followingLabel.text = "following \(user?.following ?? 0)"
         bioLabel.text = user?.bio ?? ""
         
         tableView.register(RepoCell.self, forCellReuseIdentifier: "cell")
@@ -110,45 +110,32 @@ class ProfileViewController: UIViewController {
     func convertDateFormatter(date: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        let convertedDate = dateFormatter.date(from: date)
+        
 
-        guard dateFormatter.date(from: date) != nil else {
+        guard let convertedDate = dateFormatter.date(from: date) else {
             return ""
         }
 
         dateFormatter.dateFormat = "MMM dd, yyyy"
-        let timeStamp = dateFormatter.string(from: convertedDate!)
+        let timeStamp = dateFormatter.string(from: convertedDate)
 
         return timeStamp
     }
     
     func fetchRepos() {
         if let urlString = user?.reposUrl, let url = URL(string: urlString) {
-            var urlRequest = URLRequest(url: url)
-            urlRequest.addValue(Constants.token.rawValue, forHTTPHeaderField: "Authorization")
+            let resource = ResourceObject<[Repo]>(method: HTTPMethod<[Repo]>.get, url: url, headers: nil)
             
-            URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
-                if let data = data {
-                    do {
-                        let responseString = String(decoding: data, as: UTF8.self)
-                        if responseString.contains("rate limit") {
-                            DispatchQueue.main.async {
-                                let alert = UIAlertController(title: "Error", message: "API rate limit exceeded. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)", preferredStyle: .alert)
-                                let okBtn = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                                alert.addAction(okBtn)
-                                self.present(alert, animated: true, completion: nil)
-                            }
-                        }
-                        
-                        self.repos = try JSONDecoder().decode([Repo].self, from: data)
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                    } catch {
-                        print(error.localizedDescription)
+            NetworkingManager.shared.loadObject(resource: resource) { (reposResult, request, err) in
+                if let repos = reposResult {
+                    self.repos = repos
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
                     }
+                } else {
+                    // alert
                 }
-            }.resume()
+            }
         }
     }
     
@@ -178,7 +165,6 @@ class ProfileViewController: UIViewController {
             userNameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
             userNameLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
             userNameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            userNameLabel.heightAnchor.constraint(equalToConstant: 32),
             
             emailLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 5),
             emailLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
@@ -191,17 +177,14 @@ class ProfileViewController: UIViewController {
             joinDateLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 15),
             joinDateLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
             joinDateLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            joinDateLabel.heightAnchor.constraint(equalToConstant: 32),
             
             followersLabel.topAnchor.constraint(equalTo: joinDateLabel.bottomAnchor, constant: 15),
             followersLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
             followersLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            followersLabel.heightAnchor.constraint(equalToConstant: 32),
             
             followingLabel.topAnchor.constraint(equalTo: followersLabel.bottomAnchor, constant: 15),
             followingLabel.leadingAnchor.constraint(equalTo: aviImage.trailingAnchor, constant: 10),
             followingLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            followingLabel.heightAnchor.constraint(equalToConstant: 32),
             
             bioLabel.topAnchor.constraint(equalTo: followingLabel.bottomAnchor, constant: 10),
             bioLabel.leadingAnchor.constraint(equalTo: aviImage.leadingAnchor),
@@ -222,7 +205,7 @@ extension ProfileViewController: UISearchResultsUpdating, UISearchControllerDele
             searchMode = true
             
             filteredRepos = repos.filter({ (repo) -> Bool in
-                return (repo.name?.lowercased().contains(text.lowercased()))!
+                return (repo.name?.lowercased().contains(text.lowercased())) ?? false
             })
         } else {
             searchMode = false

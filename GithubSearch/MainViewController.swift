@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ATNetworking
 
 class MainViewController: UIViewController {
         
@@ -51,55 +52,34 @@ class MainViewController: UIViewController {
     }
     
     fileprivate func getUser(url: URL, completion: @escaping (User?)->Void) {
-        var urlRequest = URLRequest(url: url)
-        urlRequest.addValue(Constants.token.rawValue, forHTTPHeaderField: "Authorization")
+        let resource = ResourceObject<User>(method: HTTPMethod<User>.get, url: url, headers: nil)
         
-        URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
-            if let data = data {
-                do {
-                    let responseString = String(decoding: data, as: UTF8.self)
-                    if responseString.contains("rate limit") {
-                        completion(nil)
-                    }
-                    let userData = try JSONDecoder().decode(User.self, from: data)
-                    completion(userData)
-                } catch {
-                    print(error.localizedDescription)
-                }
+        NetworkingManager.shared.loadObject(resource: resource) { (userObject, request, err) in
+            if let user = userObject {
+                completion(user)
+            } else {
+                completion(nil)
             }
-        }.resume()
+        }
     }
 }
 
 extension MainViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         if let text = searchController.searchBar.text, !text.isEmpty, let url = URL(string: Constants.searchUsersEndpoint.rawValue + text) {
-            var urlRequest = URLRequest(url: url)
-            urlRequest.addValue(Constants.token.rawValue, forHTTPHeaderField: "Authorization")
+            let resource = ResourceObject<GithubResults>(method: HTTPMethod<GithubResults>.get, url: url, headers: nil)
             
-            URLSession.shared.dataTask(with: urlRequest) { (data, response, err) in
-                if err == nil, let data = data {
-                    do {
-                        let responseString = String(decoding: data, as: UTF8.self)
-                        if responseString.contains("rate limit") {
-                            DispatchQueue.main.async {
-                                let alert = UIAlertController(title: "Error", message: "API rate limit exceeded. (But here\'s the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)", preferredStyle: .alert)
-                                let okBtn = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                                alert.addAction(okBtn)
-                                self.present(alert, animated: true, completion: nil)
-                            }
-                        }
-                        let results = try JSONDecoder().decode(GithubResults.self, from: data)
-                        self.users = results.items ?? []
-                       
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                    } catch {
-                        print(error.localizedDescription)
-                    }
+            NetworkingManager.shared.loadObject(resource: resource) { (githubResults, request, err) in
+                if let results = githubResults {
+                     self.users = results.items ?? []
+                    
+                     DispatchQueue.main.async {
+                         self.tableView.reloadData()
+                     }
+                } else {
+                    
                 }
-            }.resume()
+            }
         }
     }
     
@@ -154,12 +134,10 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let userCell = tableView.cellForRow(at: indexPath) as? UserCell {
-            DispatchQueue.main.async {
-                let pVC = ProfileViewController()
-                pVC.user = userCell.user
-                pVC.cache = self.cache
-                self.navigationController?.pushViewController(pVC, animated: true)
-            }
+            let pVC = ProfileViewController()
+            pVC.user = userCell.user
+            pVC.cache = self.cache
+            self.navigationController?.pushViewController(pVC, animated: true)
         }
     }
 }
